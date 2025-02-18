@@ -16,6 +16,9 @@ COPY . .
 # Build the TypeScript code to the dist directory
 RUN npm run build
 
+# Copy templates to dist/
+RUN mkdir -p dist/templates && cp -r src/templates/* dist/templates/
+
 # Expose the port the app will run on
 EXPOSE 3000
 

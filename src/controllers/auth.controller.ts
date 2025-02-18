@@ -41,9 +41,13 @@ export const authUser = asyncHandler(async (req: Request, res: Response) => {
 
   const refreshToken = generateRefreshToken({
     userId: user.id,
+    expiresIn: parseInt(process.env.JWT_REFRESH_EXPIRES_IN as string, 10),
   });
 
-  const jwtExpiresIn = parseInt(process.env.JWT_REFRESH_EXPIRES_IN || "15", 10);
+  const jwtExpiresIn = parseInt(
+    process.env.JWT_REFRESH_EXPIRES_IN as string,
+    10
+  );
 
   const savedRefreshToken = await RefreshToken.create({
     token: refreshToken,
@@ -54,6 +58,7 @@ export const authUser = asyncHandler(async (req: Request, res: Response) => {
   const accessToken = generateAccessToken({
     userId: user.id,
     refreshTokenId: savedRefreshToken.id,
+    expiresIn: parseInt(process.env.JWT_EXPIRES_IN as string, 10) || 0,
   });
 
   res.cookie("accessToken", `Bearer ${accessToken}`, {
@@ -144,6 +149,7 @@ export const refreshAccessToken = asyncHandler(
       const accessToken = generateAccessToken({
         userId: user.id,
         refreshTokenId: refreshToken.id,
+        expiresIn: parseInt(process.env.JWT_EXPIRES_IN as string, 10) || 0,
       });
 
       res.cookie("accessToken", `Bearer ${accessToken}`, {

@@ -19,11 +19,13 @@ interface VerifyTokenParams {
 
 interface GenerateRefreshTokenParams {
   userId: number;
+  expiresIn: number;
 }
 
 interface GenerateAccessTokenParams {
   userId: number;
   refreshTokenId: number;
+  expiresIn: number;
 }
 
 export const verifyToken = ({
@@ -76,25 +78,27 @@ export const generateToken = ({
 
 export const generateRefreshToken = ({
   userId,
+  expiresIn,
 }: GenerateRefreshTokenParams): string => {
   return generateToken({
     payload: {
       id: userId,
     },
-    expiresIn: parseInt(process.env.JWT_REFRESH_EXPIRES_IN as string, 10),
+    expiresIn: expiresIn,
   });
 };
 
 export const generateAccessToken = ({
   userId,
   refreshTokenId,
+  expiresIn,
 }: GenerateAccessTokenParams): string => {
   return generateToken({
     payload: {
       id: userId,
       rfId: refreshTokenId,
     },
-    expiresIn: parseInt(process.env.JWT_EXPIRES_IN as string, 10),
+    expiresIn: expiresIn,
   });
 };
 
